@@ -1,0 +1,87 @@
+from google.colab import files
+heart=files.upload()
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from scipy import stats
+import seaborn as sns
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVC
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.decomposition import PCA
+
+df1=pd.read_csv("heart.csv")
+df1.head()
+text_cols = df1.select_dtypes(include=['object']).columns
+label_encoder = LabelEncoder()
+for col in text_cols:
+df1[col] = label_encoder.fit_transform(df1[col])
+print(df1.head())
+X = df1.drop('HeartDisease', axis=1)
+y = df1['HeartDisease']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# Support Vector Machine
+svm_model = SVC(kernel='linear', random_state=42)
+svm_model.fit(X_train, y_train)
+svm_predictions = svm_model.predict(X_test)
+svm_accuracy = accuracy_score(y_test, svm_predictions)
+print(f"SVM Accuracy: {svm_accuracy}")
+
+# Logistic Regression
+lr_model = LogisticRegression(random_state=42)
+lr_model.fit(X_train, y_train)
+lr_predictions = lr_model.predict(X_test)
+lr_accuracy = accuracy_score(y_test, lr_predictions)
+print(f"Logistic Regression Accuracy: {lr_accuracy}")
+
+# Random Forest
+rf_model = RandomForestClassifier(random_state=42)
+rf_model.fit(X_train, y_train)
+rf_predictions = rf_model.predict(X_test)
+rf_accuracy = accuracy_score(y_test, rf_predictions)
+print(f"Random Forest Accuracy: {rf_accuracy}")
+
+models = {
+"SVM": svm_accuracy,
+"Logistic Regression": lr_accuracy,
+"Random Forest": rf_accuracy}
+best_model = max(models, key=models.get)
+print(f"\nBest Model: {best_model} with accuracy {models[best_model]}")
+
+pca = PCA(n_components=0.95)
+X_train_pca = pca.fit_transform(X_train)
+X_test_pca = pca.transform(X_test)
+svm_model_pca = SVC(kernel='linear', random_state=42)
+svm_model_pca.fit(X_train_pca, y_train)
+svm_predictions_pca = svm_model_pca.predict(X_test_pca)
+svm_accuracy_pca = accuracy_score(y_test, svm_predictions_pca)
+print(f"SVM Accuracy (with PCA): {svm_accuracy_pca}")
+
+lr_model_pca = LogisticRegression(random_state=42)
+lr_model_pca.fit(X_train_pca, y_train)
+lr_predictions_pca = lr_model_pca.predict(X_test_pca)
+lr_accuracy_pca = accuracy_score(y_test, lr_predictions_pca)
+print(f"Logistic Regression Accuracy (with PCA): {lr_accuracy_pca}")
+
+rf_model_pca = RandomForestClassifier(random_state=42)
+rf_model_pca.fit(X_train_pca, y_train)
+rf_predictions_pca = rf_model_pca.predict(X_test_pca)
+rf_accuracy_pca = accuracy_score(y_test, rf_predictions_pca)
+print(f"Random Forest Accuracy (with PCA): {rf_accuracy_pca}")
+
+models_pca = {
+"SVM": svm_accuracy_pca,
+"Logistic Regression": lr_accuracy_pca,
+"Random Forest": rf_accuracy_pca}
+best_model_pca = max(models_pca, key=models_pca.get)
+print(f"\nBest Model (with PCA): {best_model_pca} with accuracy {models_pca[best_model_pca]}")
