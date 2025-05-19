@@ -1,0 +1,152 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+iris_df = pd.read_csv('iris.csv')
+le = LabelEncoder()
+iris_df['species'] = le.fit_transform(iris_df['species'])
+X = iris_df.drop('species', axis=1)
+y = iris_df['species']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+error_rates = []
+accuracies = []
+k_values = range(1, 10)
+for k in k_values:
+    knn = KNeighborsClassifier(n_neighbors=k)
+    knn.fit(X_train, y_train)
+    y_pred_k = knn.predict(X_test)
+    error = 1 - accuracy_score(y_test, y_pred_k)
+    error_rates.append(error)
+    accuracies.append(accuracy_score(y_test, y_pred_k))
+
+plt.figure(figsize=(12, 5))
+plt.subplot(1, 2, 1)
+plt.plot(k_values, accuracies, marker='o', color='blue')
+plt.title("Accuracy vs K")
+plt.xlabel("K Value")
+plt.ylabel("Accuracy")
+
+plt.subplot(1, 2, 2)
+plt.plot(k_values, error_rates, marker='o', color='red')
+plt.title("Error Rate vs K")
+plt.xlabel("K Value")
+plt.ylabel("Error Rate")
+plt.tight_layout()
+plt.show()
+best_k = k_values[accuracies.index(max(accuracies))]
+print(f"Best K: {best_k} with Accuracy: {max(accuracies):.2f}")
+
+knn = KNeighborsClassifier(n_neighbors=best_k)
+knn.fit(X_train, y_train)
+y_pred = knn.predict(X_test)
+
+# Evaluation
+print("\n=== Final Evaluation on IRIS Dataset ===")
+print("Accuracy Score:", accuracy_score(y_test, y_pred))
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred, labels=[0, 1, 2], target_names=le.classes_))
+
+# Confusion Matrix
+cm = confusion_matrix(y_test, y_pred)
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+            xticklabels=le.classes_, yticklabels=le.classes_)
+plt.title("Confusion Matrix - IRIS")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.show()
+
+df = pd.read_csv('diabetes.csv')
+X = df.drop('Outcome', axis=1)
+y = df['Outcome']
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+X_train, X_test, y_train, y_test = train_test_split(
+    X_scaled, y, test_size=0.2, random_state=42, stratify=y
+)
+accuracy_scores = []
+k_range = range(1, 21)
+
+for k in k_range:
+    knn = KNeighborsClassifier(n_neighbors=k)
+    knn.fit(X_train, y_train)
+    y_pred_k = knn.predict(X_test)
+    acc = accuracy_score(y_test, y_pred_k)
+    accuracy_scores.append(acc)
+
+plt.figure(figsize=(8, 5))
+plt.plot(k_range, accuracy_scores, marker='o', color='purple')
+plt.title("Accuracy vs K (Diabetes Dataset)")
+plt.xlabel("K Value")
+plt.ylabel("Accuracy")
+plt.xticks(k_range)
+plt.grid()
+plt.show()
+best_k = k_range[accuracy_scores.index(max(accuracy_scores))]
+print(f"Best K: {best_k} with Accuracy: {max(accuracy_scores):.2f}")
+
+knn = KNeighborsClassifier(n_neighbors=best_k)
+knn.fit(X_train, y_train)
+y_pred = knn.predict(X_test)
+
+print("=== Final Evaluation (Diabetes Dataset) ===")
+print("Accuracy Score:", accuracy_score(y_test, y_pred))
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))
+
+cm = confusion_matrix(y_test, y_pred)
+sns.heatmap(cm, annot=True, fmt='d', cmap='Purples', xticklabels=['No Diabetes', 'Diabetes'], yticklabels=['No Diabetes', 'Diabetes'])
+plt.title("Confusion Matrix - Diabetes")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.show()
+
+heart_df = pd.read_csv('heart.csv')
+X = heart_df.drop('target', axis=1)
+y = heart_df['target']
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+X_train, X_test, y_train, y_test = train_test_split(
+    X_scaled, y, test_size=0.2, random_state=42, stratify=y
+)
+accuracy_scores = []
+k_range = range(1, 21)
+
+for k in k_range:
+    knn = KNeighborsClassifier(n_neighbors=k)
+    knn.fit(X_train, y_train)
+    y_pred_k = knn.predict(X_test)
+    acc = accuracy_score(y_test, y_pred_k)
+    accuracy_scores.append(acc)
+
+plt.figure(figsize=(8, 5))
+plt.plot(k_range, accuracy_scores, marker='o', color='red')
+plt.title("Accuracy vs K (Heart Dataset)")
+plt.xlabel("K Value")
+plt.ylabel("Accuracy")
+plt.xticks(k_range)
+plt.grid()
+plt.show()
+
+best_k = k_range[accuracy_scores.index(max(accuracy_scores))]
+print(f"Best K: {best_k} with Accuracy: {max(accuracy_scores):.2f}")
+
+knn = KNeighborsClassifier(n_neighbors=best_k)
+knn.fit(X_train, y_train)
+y_pred = knn.predict(X_test)
+
+print("=== Final Evaluation (Heart Dataset) ===")
+print("\nAccuracy Score:", accuracy_score(y_test, y_pred))
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred, target_names=['No Disease', 'Disease']))
+cm = confusion_matrix(y_test, y_pred)
+sns.heatmap(cm, annot=True, fmt='d', cmap='Reds', xticklabels=['No Disease', 'Disease'], yticklabels=['No Disease', 'Disease'])
+plt.title("Confusion Matrix - Heart Disease")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.show() 
