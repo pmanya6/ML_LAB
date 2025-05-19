@@ -1,0 +1,151 @@
+import pandas as pd 
+data = { 
+'Name': ['Alice', 'Bob', 'Charlie', 'David'], 
+'Age': [25, 30, 35, 40], 
+'City': ['New York', 'Los Angeles', 'Chicago', 'Houston'] 
+} 
+df = pd.DataFrame(data) 
+print("Sample data:") 
+print(df.head()) 
+from sklearn.datasets import load_iris 
+iris = load_iris() 
+df = pd.DataFrame(iris.data, columns=iris.feature_names) 
+df['target'] = iris.target 
+print("Sample data:") 
+print(df.head()) 
+file_path = 'data.csv' 
+df = pd.read_csv(file_path) 
+print("Sample data:") 
+print(df.head()) 
+print("\n") 
+file_path = 'mobiles-dataset-2025.csv' 
+df = pd.read_csv(file_path, encoding='latin-1') # or 'cp1252' or other suitable encoding print("Sample data:") 
+print(df.head()) 
+import pandas as pd 
+data = { 
+'USN': ['IS001','IS002','IS003','IS004','IS005'], 
+'Name': ['Alice', 'Bob', 'Charlie', 'David','Eve'], 
+'Marks': [25, 30, 35, 40,45] 
+} 
+df = pd.DataFrame(data) 
+print("Sample data:") 
+print(df.head()) 
+from sklearn.datasets import load_diabetes 
+iris = load_diabetes() 
+df = pd.DataFrame(iris.data, columns=iris.feature_names) 
+print("Sample data:") 
+print(df.head())
+file_path = 'sample_sales_data.csv' 
+df = pd.read_csv(file_path) 
+print("Sample data:") 
+print(df.head()) 
+print("\n") 
+df = pd.read_csv("/content/dataset-of-diabetes .csv",encoding='latin-1') 
+print("Sample data:") 
+print(df.head()) 
+print("\n") 
+df =pd.read_csv('sample_sales_data.csv') 
+print("Sample data:") 
+print(df.head()) 
+df.to_csv('output.csv',index=False) 
+print("Data saved to output.csv") 
+sales_df =pd.read_csv('sample_sales_data.csv') 
+print("Sample data:") 
+print(sales_df.head()) 
+sales_by_region =sales_df.groupby('Region')['Sales'].sum() 
+print("\nTotal sales by region:") 
+print(sales_by_region) 
+best_selling_products =sales_df.groupby('Product')['Quantity'].sum().sort_values(ascending=False) print("\nBest-selling products by quantity:") 
+print(best_selling_products) 
+sales_by_region.to_csv('sales_by_region.csv') 
+best_selling_products.to_csv('best_selling_products.csv') 
+print("Data saved to sales_by_region.csv and best_selling_products.csv") 
+import yfinance as yf 
+import matplotlib.pyplot as plt 
+tickers = ["RELIANCE.NS", "TCS.NS", "INFY.NS"] 
+data = yf.download(tickers, start="2022-10-01", end="2023-10-01", 
+group_by='ticker') 
+print("First 5 rows of the dataset:") 
+print(data.head()) 
+print("\nShape of the dataset:") 
+print(data.shape) 
+print("\nColumn names:") 
+print(data.columns) 
+print("\n") 
+reliance_data = data['RELIANCE.NS'] 
+print("\nSummary statistics for Reliance Industries:") 
+print(reliance_data.describe()) 
+reliance_data['Daily Return'] = reliance_data['Close'].pct_change() 
+print("\n") 
+plt.figure(figsize=(12, 6)) 
+plt.subplot(2, 1, 1) 
+reliance_data['Close'].plot(title="Reliance Industries - Closing Price")
+plt.subplot(2, 1, 2) 
+reliance_data['Daily Return'].plot(title="Reliance Industries - Daily Returns", color='orange') plt.tight_layout() 
+plt.show() 
+reliance_data.to_csv('reliance_stock_data.csv') 
+tickers = ["HDFCBANK.NS", "ICICI.NS", "KOTAKBANK.NS"] 
+data = yf.download(tickers, start="2024-01-01", end="2024-12-30", 
+group_by='ticker') 
+print("First 5 rows of the dataset:") 
+print(data.head()) 
+print("\nShape of the dataset:") 
+print(data.shape) 
+print("\nColumn names:") 
+print(data.columns) 
+print("\n") 
+reliance_data = data['HDFCBANK.NS'] 
+print("\nSummary statistics for Reliance Industries:") 
+print(reliance_data.describe()) 
+reliance_data['Daily Return'] = reliance_data['Close'].pct_change() 
+print("\n") 
+plt.figure(figsize=(12, 6)) 
+plt.subplot(2, 1, 1) 
+reliance_data['Close'].plot(title="HDFC Industries - Closing Price") 
+plt.subplot(2, 1, 2) 
+reliance_data['Daily Return'].plot(title="HDFCIndustries - Daily Returns", color='red') plt.tight_layout() 
+plt.show() 
+reliance_data.to_csv('hdfc_stock_data.csv') 
+print("\nhdfc stock data saved to 'hdfc_stock_data.csv'.") 
+tickers = ["HDFCBANK.NS", "ICICIBANK.NS", "KOTAKBANK.NS"] data = yf.download(tickers, start="2024-01-01", end="2024-12-30", 
+group_by='ticker') 
+print("First 5 rows of the dataset:") 
+print(data.head()) 
+print("\nShape of the dataset:") 
+print(data.shape) 
+print("\nColumn names:") 
+print(data.columns) 
+print("\n") 
+reliance_data = data['ICICIBANK.NS'] 
+print("\nSummary statistics for ICICI Industries:") 
+print(reliance_data.describe()) 
+reliance_data['Daily Return'] = reliance_data['Close'].pct_change() 
+print("\n") 
+plt.figure(figsize=(12, 6)) 
+plt.subplot(2, 1, 1) 
+reliance_data['Close'].plot(title="ICICI Industries - Closing Price") 
+plt.subplot(2, 1, 2) 
+reliance_data['Daily Return'].plot(title="ICICI Industries - Daily Returns", color='BLACK') plt.tight_layout()
+plt.show() 
+reliance_data.to_csv('icici_stock_data.csv') 
+print("\nicici stock data saved to 'icici_stock_data.csv'.") 
+tickers = ["HDFCBANK.NS", "ICICI.NS", "KOTAKBANK.NS"] data = yf.download(tickers, start="2024-01-01", end="2024-12-30", group_by='ticker') 
+print("First 5 rows of the dataset:") 
+print(data.head()) 
+print("\nShape of the dataset:") 
+print(data.shape) 
+print("\nColumn names:") 
+print(data.columns) 
+print("\n") 
+reliance_data = data['KOTAKBANK.NS'] 
+print("\nSummary statistics for Reliance Industries:") 
+print(reliance_data.describe()) 
+reliance_data['Daily Return'] = reliance_data['Close'].pct_change() print("\n") 
+plt.figure(figsize=(12, 6)) 
+plt.subplot(2, 1, 1) 
+reliance_data['Close'].plot(title="KOTAK Industries - Closing Price") plt.subplot(2, 1, 2) 
+reliance_data['Daily Return'].plot(title="kotak Industries - Daily Returns", color='red') plt.tight_layout() 
+plt.show() 
+reliance_data.to_csv('kotak_stock_data.csv') 
+print("\nkotak stock data saved to 'kotak_stock_data.csv'.") 
+  
