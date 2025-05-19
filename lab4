@@ -1,0 +1,71 @@
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("HR_comma_sep.csv")
+print(df.info())
+numericCols = df.select_dtypes(include=['float64', 'int64']).columns
+plt.figure(figsize=(10, 8))
+sns.heatmap(df[numericCols].corr(), annot=True, cmap='coolwarm', fmt='.2f')
+plt.title("Correlation Matrix (Numeric Features)")
+plt.show()
+
+plt.figure(figsize=(8, 6))
+sns.countplot(x='salary', hue='left', data=df)
+plt.title("Impact of Salary on Employee Retention")
+plt.xlabel("Salary Level")
+plt.ylabel("Employee Count")
+plt.show()
+
+import pandas as pd
+df = pd.read_csv("zoo-data.csv")
+print(df.info())
+print(df.head())
+print(df.isnull().sum())
+df.drop(columns=['animal_name'], inplace=True)
+X = df.drop(columns=['class_type'])
+y = df['class_type']
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y)
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+logreg = LogisticRegression(max_iter=200, multi_class='multinomial', solver='lbfgs')
+logreg.fit(X_train, y_train)
+
+from sklearn.metrics import accuracy_score
+y_pred = logreg.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Model Accuracy: {accuracy:.2f}")
+
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+import matplotlib.pyplot as plt
+cm = confusion_matrix(y_test, y_pred)
+disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=logreg.classes_)
+disp.plot(cmap=plt.cm.Blues)
+plt.title("Confusion Matrix for Zoo Animal Classification")
+plt.show()
+
+y_pred = logreg.predict(X_test)
+pred_classes = [class_mapping[pred] for pred in y_pred]
+print("Predicted Classes:", pred_classes)
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+sns.countplot(x='class_type', data=df)
+plt.title("Class Distribution of Animals in Zoo Dataset")
+plt.xlabel("Class Type")
+plt.ylabel("Count")
+plt.show()
+
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+cm = confusion_matrix(y_test, y_pred)
+class_labels = [class_mapping[num] for num in logreg.classes_]
+disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=class_labels)
+disp.plot(cmap=plt.cm.Blues)
+plt.title("Confusion Matrix with Class Names")
+plt.show()
