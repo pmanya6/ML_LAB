@@ -1,0 +1,127 @@
+import pandas as pd
+import numpy as np
+from sklearn import linear_model
+import matplotlib.pyplot as plt
+
+df = pd.read_csv('housing_area_price.csv')
+plt.xlabel('area')
+plt.ylabel('price')
+plt.scatter(df.area,df.price,color='red',marker='+')
+new_df = df.drop('price',axis='columns')
+new_df
+price = df.price
+reg = linear_model.LinearRegression()
+reg.fit(new_df,price)
+
+#(1) Predict price of a home with area = 3300 sqr ft
+reg.predict([[3300]])
+reg.coef_
+reg.intercept_
+3300*135.78767123 + 180616.43835616432
+
+#(2) Predict price of a home with area = 5000 sqr ft
+reg.predict([[5000]])
+
+df = pd.read_csv('homeprices_Multiple_LR.csv')
+df.bedrooms.median()
+df.bedrooms = df.bedrooms.fillna(df.bedrooms.median())
+reg = linear_model.LinearRegression()
+reg.fit(df.drop('price',axis='columns'),df.price)
+reg.coef_
+reg.intercept_
+
+#Find price of home with 3000 sqr ft area, 3 bedrooms, 40 year old
+reg.predict([[3000, 3, 40]])
+112.06244194*3000 + 23388.88007794*3 + -3231.71790863*40 + 221323.00186540384
+
+df = pd.read_csv('canada_per_capita_income.csv')
+print(df.head())
+X = df[['year']]
+y = df['per capita income (US$)']
+reg = LinearRegression()
+reg.fit(X, y)
+predicted_income_2020 = reg.predict([[2020]])
+print(f"Predicted per capita income for Canada in 2020: {predicted_income_2020[0]:.2f}")
+
+plt.scatter(X, y, color='blue')
+plt.plot(X, reg.predict(X), color='red')
+plt.xlabel('Year')
+plt.ylabel('Per Capita Income')
+plt.title('Per Capita Income in Canada Over the Years')
+plt.show()
+
+df = pd.read_csv('salary.csv')
+print(df.head())
+print("Missing values in the dataset:")
+print(df.isnull().sum())
+
+df['YearsExperience'] = df['YearsExperience'].fillna(df['YearsExperience'].median())
+print("\nMissing values after filling:")
+print(df.isnull().sum())
+X = df[['YearsExperience']]
+y = df['Salary']
+reg = LinearRegression()
+reg.fit(X, y)
+predicted_salary_12_years = reg.predict([[12]])
+print(f"\nPredicted salary for an employee with 12 years of experience: ${predicted_salary_12_years[0]:,.2f}")
+
+plt.scatter(X, y, color='blue')
+plt.plot(X, reg.predict(X), color='red')
+plt.xlabel('Years of Experience')
+plt.ylabel('Salary')
+plt.title('Salary vs. Years of Experience')
+plt.show()
+
+def convert_to_numeric(value):
+    word_to_num = {
+        'zero': 0, 'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5,
+        'six': 6, 'seven': 7, 'eight': 8, 'nine': 9, 'ten': 10,
+        'eleven': 11, 'twelve': 12, 'thirteen': 13, 'fourteen': 14,
+        'fifteen': 15
+    }
+    return word_to_num.get(value.lower(), value) if isinstance(value, str) else value
+
+df_hiring = pd.read_csv('hiring.csv')
+print(df.head())
+df_hiring['experience'] = df_hiring['experience'].apply(convert_to_numeric)
+
+df_hiring['experience'].fillna(0, inplace=True)
+df_hiring['test_score(out of 10)'].fillna(df_hiring['test_score(out of 10)'].median(), inplace=True)
+df_hiring['interview_score(out of 10)'].fillna(df_hiring['interview_score(out of 10)'].median(), inplace=True)
+X_hiring = df_hiring[['experience', 'test_score(out of 10)', 'interview_score(out of 10)']]
+y_hiring = df_hiring['salary($)']
+reg_hiring = LinearRegression()
+reg_hiring.fit(X_hiring, y_hiring)
+candidates = np.array([[2, 9, 6], [12, 10, 10]])
+predicted_salaries = reg_hiring.predict(candidates)
+
+for i, candidate in enumerate(candidates):
+    print(f"\nPredicted salary for candidate with {candidate[0]} yrs experience, {candidate[1]} test score, {candidate[2]} interview score: {predicted_salaries[i]:.2f} USD")
+
+plt.scatter(y_hiring, reg_hiring.predict(X_hiring), color='blue', label='Predicted vs Actual')
+plt.xlabel("Actual Salary")
+plt.ylabel("Predicted Salary")
+plt.title("Actual vs Predicted Salary")
+plt.legend()
+plt.show()
+
+df_companies = pd.read_csv('1000_Companies.csv')
+print(df.head())
+label_encoder = LabelEncoder()
+df_companies['State'] = label_encoder.fit_transform(df_companies['State'])
+X_companies = df_companies[['R&D Spend', 'Administration', 'Marketing Spend', 'State']]
+y_companies = df_companies['Profit']
+df_companies.fillna(df_companies.median(), inplace=True)
+reg_companies = LinearRegression()
+reg_companies.fit(X_companies, y_companies)
+
+input_data = np.array([[91694.48, 515841.3, 11931.24, label_encoder.transform(['Florida'])[0]]])
+predicted_profit = reg_companies.predict(input_data)
+print(f"Predicted profit: {predicted_profit[0]:.2f} USD")
+
+plt.scatter(y_companies, reg_companies.predict(X_companies), color='blue', label='Predicted vs Actual')
+plt.xlabel("Actual Profit")
+plt.ylabel("Predicted Profit")
+plt.title("Actual vs Predicted Profit")
+plt.legend()
+plt.show()
